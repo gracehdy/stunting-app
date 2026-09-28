@@ -103,7 +103,3 @@ Aplikasi akan terbuka di `http://localhost:8501`.
 
 - Data pada **Dashboard**, **City Analysis**, dan **Monitoring** saat ini masih berupa **data contoh (dummy)** dan belum terhubung ke sumber data nyata.
 - Model prediksi saat ini hanya memakai umur dan tinggi badan; jenis kelamin dan berat badan dipakai sebagai konteks untuk saran AI.
-
-## 👤 Author
-
-**Grace** — [@gracehdy](https://github.com/gracehdy)
