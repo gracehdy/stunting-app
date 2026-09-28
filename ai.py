@@ -6,7 +6,6 @@ import pickle
 import os
 
 def train_model():
-    # Load data from the root directory
     try:
         df = pd.read_csv("data_balita.csv")
     except FileNotFoundError:
@@ -15,7 +14,6 @@ def train_model():
     stunting_categories = ['stunted', 'severely stunted']
     df['is_stunted'] = df['Status Gizi'].apply(lambda x: 1 if x in stunting_categories else 0)
 
-    # Features used for the Decision Tree
     X = df[['Umur (bulan)', 'Tinggi Badan (cm)']]
     y = df['is_stunted']
 
@@ -23,15 +21,12 @@ def train_model():
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    # Model trained without max_depth limit for maximum accuracy (the fix)
     model = DecisionTreeClassifier(random_state=42)
     model.fit(X_train, y_train)
 
-    # Check if 'model' directory exists, if not create it
     if not os.path.exists("model"):
         os.makedirs("model")
 
-    # Save model to model/model.pkl
     with open("model/model.pkl", "wb") as f:
         pickle.dump(model, f)
         
@@ -39,5 +34,4 @@ def train_model():
 
 if __name__ == "__main__":
     train_model()
-    # Confirmation message for the user:
-    print("✅ Model trained and saved successfully to model/model.pkl.")
+    print("Model trained and saved successfully to model/model.pkl.")

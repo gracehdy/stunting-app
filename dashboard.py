@@ -13,7 +13,6 @@ def run():
     st.title("Stunting Detection Dashboard")
     st.markdown("AI-powered malnutrition monitoring across Central Java cities.")
 
-    # --- Header Image with Centered Overlay Text (Fixed Height) ---
     header_image_path = "assets/children1.jpeg"  # replace with your image
     header_text_title = "Empowering Child Health Through AI"
     header_text_subtitle = "Advanced detection and monitoring for better nutrition outcomes"
@@ -40,15 +39,12 @@ def run():
     </div>
     """, unsafe_allow_html=True)
 
-
-    # --- Metrics ---
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Cases", "3,230")
     col2.metric("Average Rate", "9.7%", "↑ 8.5%")
     col3.metric("Cities Monitored", "8")
     col4.metric("Risk Level", "Moderate")
-
-    # --- Cases by City Bar Chart ---
+    
     st.subheader("Cases by City")
     data = pd.DataFrame({
         "City": ["Semarang", "Solo", "Pekalongan", "Tegal", "Magelang", "Purwokerto", "Kudus", "Salatiga"],
@@ -60,13 +56,12 @@ def run():
     )
     st.altair_chart(bar_chart, use_container_width=True)
 
-    # --- Severity Distribution Pie Chart (smaller) ---
     st.subheader("Severity Distribution")
     st.markdown("Breakdown of stunting cases by severity level")
     data_pie = pd.DataFrame({
         "Severity": ["Mild", "Moderate", "Severe"],
         "Percent": [45, 35, 20],
-        "Color": ["#FFD700", "#FFA500", "#FF0000"]  # yellow, orange, red
+        "Color": ["#FFD700", "#FFA500", "#FF0000"]  
     })
     pie_chart = alt.Chart(data_pie, width=300, height=300).mark_arc().encode(
         theta=alt.Theta(field="Percent", type="quantitative"),
@@ -75,7 +70,6 @@ def run():
     )
     st.altair_chart(pie_chart)
 
-    # --- 6-Month Trend Line Chart ---
     st.subheader("6-Month Trend")
     st.markdown("Stunting cases trend over the past 6 months")
     trend_data = pd.DataFrame({
@@ -88,7 +82,6 @@ def run():
     )
     st.altair_chart(line_chart, use_container_width=True)
 
-    # --- Central Java Cities Performance Progress Bars ---
     st.subheader("Central Java Cities Performance")
     st.markdown("Stunting rates and progress across Central Java cities")
 

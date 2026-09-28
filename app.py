@@ -8,33 +8,21 @@ import monitoring
 import settings
 import stunting_detection
 
-# ------------------------------------------------------------
-# 1. PAGE CONFIG (must be at top)
-# ------------------------------------------------------------
+
 st.set_page_config(
     page_title="StuntingAI",
     layout="wide",
     page_icon="assets/icon_favicon.png"
 )
-
-# ------------------------------------------------------------
-# 2. Initialize session_state for page
-# ------------------------------------------------------------
 if "page" not in st.session_state:
     st.session_state.page = "Dashboard"
 
-# ------------------------------------------------------------
-# 3. Load sidebar icon
-# ------------------------------------------------------------
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
 icon_base64 = get_base64_image("assets/icon.png")
 
-# ------------------------------------------------------------
-# 4. Sidebar Header
-# ------------------------------------------------------------
 st.sidebar.markdown(
     f"""
     <div style="
@@ -61,10 +49,6 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 st.sidebar.write("---")
-
-# ------------------------------------------------------------
-# 5. Sidebar Menu
-# ------------------------------------------------------------
 
 menu_items = ["Dashboard", "Predict Stunting", "City Analysis", "Monitoring", "Settings"]
 
@@ -94,16 +78,9 @@ with st.sidebar:
         }
     )
 
-# ------------------------------------------------------------
-# 6. Update session_state when user clicks
-# ------------------------------------------------------------
 if selected != st.session_state.page:
     st.session_state.page = selected
     st.rerun()
-
-# ------------------------------------------------------------
-# 7. Routing
-# ------------------------------------------------------------
 if st.session_state.page == "Dashboard":
     dashboard.run()
 elif st.session_state.page == "Predict Stunting":

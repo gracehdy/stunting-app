@@ -9,16 +9,12 @@ def run():
     st.title("AI Stunting Detection")
     st.markdown("Enter child measurements for AI-powered stunting analysis.")
 
-    # --- 1. Load or Retrain Model ---
     model_path = "model/model.pkl"
     
-    # Logic: If model not in session, try to load it. 
     if "model" not in st.session_state:
-        # Ensure the 'model' directory exists before checking file size
         if not os.path.exists("model"):
             os.makedirs("model")
 
-        # Check if file is missing or empty
         if not os.path.exists(model_path) or os.path.getsize(model_path) == 0:
             st.session_state.model = train_model()
         else:
@@ -26,7 +22,6 @@ def run():
                 with open(model_path, "rb") as f:
                     st.session_state.model = pickle.load(f)
             except (EOFError, pickle.UnpicklingError):
-                # If file exists but is corrupted/empty
                 st.session_state.model = train_model()
 
     model = st.session_state.model
@@ -35,7 +30,6 @@ def run():
         st.error("Error: Could not load dataset 'data_balita.csv' to train the model. Check if the CSV file exists.")
         return
 
-    # --- 2. Input Form ---
     with st.form("input_form"):
         col1, col2 = st.columns(2)
 
@@ -49,15 +43,12 @@ def run():
 
         submitted = st.form_submit_button("Analyze")
 
-    # --- 3. Prediction & AI Insights ---
     if submitted:
-        # Prepare data for the Decision Tree
+
         df_input = pd.DataFrame({
             "Umur (bulan)": [umur],
             "Tinggi Badan (cm)": [height]
         })
-
-        # Get Prediction
         pred_class = model.predict(df_input)[0]
         
         if pred_class == 1:
@@ -70,15 +61,13 @@ def run():
 
         st.divider()
 
-        # --- 4. Groq API Integration ---
         api_key = st.secrets.get("GROQ_API_KEY")
 
         if not api_key:
-            st.info("ℹ️ Add your `GROQ_API_KEY` to `.streamlit/secrets.toml` to enable detailed AI advice.")
+            st.info("Add your `GROQ_API_KEY` to `.streamlit/secrets.toml` to enable detailed AI advice.")
         else:
             client = Groq(api_key=api_key)
-            
-            # Create a prompt for the LLM
+
             prompt = f"""
             You are a pediatric nutritionist AI. 
             A child ({gender}, {umur} months old) has been screened.
@@ -96,11 +85,11 @@ def run():
                 try:
                     chat_completion = client.chat.completions.create(
                         messages=[{"role": "user", "content": prompt}],
-                        model="llama-3.1-8b-instant", # Stable Groq Model
+                        model="llama-3.1-8b-instant", 
                     )
                     response = chat_completion.choices[0].message.content
                     
-                    st.subheader("🤖 AI Nutritionist Analysis")
+                    st.subheader("AI Nutritionist Analysis")
                     st.markdown(response)
                     
                 except Exception as e:

@@ -7,7 +7,6 @@ def run():
     st.title("Central Java City Analytics")
     st.text("Detailed stunting analysis for Central Java cities")
 
-    # --- Data for each city ---
     city_data = {
         "Semarang": {
             "population": "1,653,000",
@@ -76,11 +75,9 @@ def run():
         ]
     }
 
-    # --- Select City ---
     city = st.selectbox("Select City", list(city_data.keys()))
     data = city_data[city]
 
-    # --- Display city statistics ---
     st.subheader(f"{city} Health Monitoring")
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Population", data["population"])
@@ -88,7 +85,6 @@ def run():
     col3.metric("Stunting Rate", data["rate"])
     col4.metric("Improvement", data["improvement"])
 
-    # --- Monthly Trend Chart (black line and points) ---
     st.subheader("Monthly Trend")
     df_trend = pd.DataFrame({
         "Month": [f"M{i+1}" for i in range(len(data["trend"]))],
@@ -100,7 +96,6 @@ def run():
     )
     st.altair_chart(line_chart, use_container_width=True)
 
-    # --- District Analysis Bar Chart (black bars, 70% opacity) ---
     st.subheader("District Analysis")
     st.markdown("Stunting cases by district/sub-area")
     df_district = pd.DataFrame({
@@ -113,14 +108,13 @@ def run():
     )
     st.altair_chart(bar_chart, use_container_width=True)
 
-    # --- Age Group Distribution (black, pill-shaped progress bars) ---
     st.subheader("Age Group Distribution")
     st.markdown("Stunting cases by age groups")
 
     selected_age_groups = age_group_data[city]
 
     for group in selected_age_groups:
-        width = group["percent"]  # percentage width
+        width = group["percent"]
         st.markdown(f"**{group['range']}** - {group['cases']} cases ({group['percent']}%)")
         st.markdown(f"""
             <div style="
