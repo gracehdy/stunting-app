@@ -2,6 +2,8 @@
 
 **StuntingAI** adalah aplikasi web berbasis Streamlit untuk membantu skrining dan pemantauan stunting pada balita. Aplikasi ini menggabungkan model *machine learning* untuk mendeteksi risiko stunting dengan rekomendasi gizi yang dihasilkan oleh LLM (Groq), serta dashboard untuk melihat gambaran kasus di kota-kota di Jawa Tengah.
 
+🔗 **Live Demo:** [stunting-app-5bat9xvv7rfz8nsj8fra9x.streamlit.app](https://stunting-app-5bat9xvv7rfz8nsj8fra9x.streamlit.app/)
+
 > **Disclaimer:** Aplikasi ini adalah proyek edukasi/prototipe dan **bukan alat diagnosis medis**. Hasil prediksi hanya berdasarkan data statistik. Selalu konsultasikan kondisi anak dengan dokter, bidan, atau tenaga kesehatan.
 
 ---
@@ -18,11 +20,25 @@
 
 ## Cara Kerja Prediksi
 
-1. Model dilatih dari `data_balita.csv` menggunakan **Decision Tree Classifier** (scikit-learn).
+1. Model dilatih dari `data_balita.csv` (121.000 baris) menggunakan **Decision Tree Classifier** (scikit-learn).
 2. Fitur yang digunakan: **Umur (bulan)** dan **Tinggi Badan (cm)**.
-3. Label: status gizi `stunted` dan `severely stunted` dikelompokkan menjadi kelas *stunting* (1), sisanya *normal* (0). Data dibagi 80:20 dengan *stratified split*.
+3. Label: status gizi `stunted` dan `severely stunted` dikelompokkan menjadi kelas *stunting* (1), sisanya *normal* (0). Data dibagi 80:20 dengan *stratified split* (`random_state=42`).
 4. Model disimpan ke `model/model.pkl`. Jika file belum ada atau rusak, model akan dilatih ulang otomatis saat halaman **Predict Stunting** dibuka.
 5. Setelah prediksi, aplikasi memanggil **Groq API** (model `openai/gpt-oss-120b`) untuk menghasilkan analisis berat-untuk-tinggi badan, 3 rekomendasi menu gizi lokal (konteks Indonesia), dan saran pengasuhan sesuai usia.
+
+## Performa Model
+
+Dievaluasi pada test set (20% dari 121.000 baris, n = 24.200):
+
+| Metrik | Nilai |
+|---|---|
+| Accuracy | 97.65% |
+| Precision | 96.38% |
+| Recall | 95.15% |
+| F1 Score | 95.76% |
+| ROC AUC | 0.9937 |
+
+Dataset tidak seimbang (±72% normal, ±28% stunting), sehingga precision, recall, dan F1 dilaporkan selain accuracy agar performa pada kelas stunting (kelas minoritas) tetap terlihat jelas. Jalankan `python ai.py` untuk melatih ulang model dan mencetak metrik ini.
 
 ## Struktur Proyek
 
@@ -34,7 +50,7 @@ stunting-app/
 ├── city_analysis.py       # Halaman analisis per kota
 ├── monitoring.py          # Halaman monitoring pasien
 ├── settings.py            # Halaman pengaturan
-├── ai.py                  # Pelatihan model Decision Tree
+├── ai.py                  # Pelatihan & evaluasi model Decision Tree
 ├── data_balita.csv        # Dataset pelatihan
 ├── model/                 # Model terlatih (model.pkl)
 ├── assets/                # Ikon & gambar
@@ -83,13 +99,15 @@ API key bisa didapatkan di [console.groq.com](https://console.groq.com). Tanpa A
 python ai.py
 ```
 
+Perintah ini juga akan mencetak metrik evaluasi (accuracy, precision, recall, F1, ROC AUC, confusion matrix) ke terminal.
+
 ### 6. Jalankan aplikasi
 
 ```bash
 streamlit run app.py
 ```
 
-Aplikasi akan terbuka di `http://localhost:8501`.
+Aplikasi akan terbuka di `http://localhost:8501`, atau coba langsung lewat [live demo](https://stunting-app-5bat9xvv7rfz8nsj8fra9x.streamlit.app/).
 
 ## Teknologi
 
